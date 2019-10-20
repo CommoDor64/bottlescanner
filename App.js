@@ -24,6 +24,7 @@ class Home extends Component {
     bottles: {},
     stage: 0,
     done: false,
+    amount: 100,
   };
 
   async componentDidMount() {
@@ -48,7 +49,16 @@ class Home extends Component {
   }
 
   pay(addr, amount) {
-    this.setState({ done: true, stage: -1 }, () => { console.log('sending info') })
+    this.setState({ done: true, stage: -1 }, () => {
+      fetch('http://10.0.1.9:3000/pay', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ addr, amount }) // body data type must match "Content-Type" header
+      }).then(res => res.json()).then(resJson => console.log(res)).catch(err => console.error(err));
+    })
   }
   render() {
     const { hasCameraPermission, scanned1, scanned2, stage, done } = this.state;
